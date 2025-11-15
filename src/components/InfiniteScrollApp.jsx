@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Loader2, User, Calendar, MapPin } from 'lucide-react';
+import { Loader2, User, Calendar, MapPin, Sun, Moon } from 'lucide-react';
 
 const InfiniteScrollApp = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [darkMode, setDarkMode] = useState(false); // New state for dark mode
+
+  const toggleTheme = () => {
+    setDarkMode(prevMode => !prevMode);
+  };
 
   // Simulate API call to fetch data
   const fetchData = useCallback(async (pageNum) => {
@@ -78,33 +83,42 @@ const InfiniteScrollApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`${darkMode ? 'dark' : ''} min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100`}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Infinite Scroll Demo</h1>
-          <p className="text-gray-600 mt-2">
-            Scroll down to load more users - each load takes 4 seconds with animated loader
-          </p>
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 py-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Infinite Scroll Demo</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              Scroll down to load more users - each load takes 4 seconds with animated loader
+            </p>
+          </div>
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {darkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+          </button>
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Stats */}
-        <div className="mb-8 bg-white rounded-lg shadow-sm p-6">
+        <div className="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-2xl font-bold text-blue-600">{items.length}</div>
-              <div className="text-gray-600">Total Users</div>
+              <div className="text-gray-600 dark:text-gray-400">Total Users</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-green-600">{page} × 10</div>
-              <div className="text-gray-600">Items Pattern</div>
+              <div className="text-gray-600 dark:text-gray-400">Items Pattern</div>
             </div>
             <div>
               <div className="text-2xl font-bold text-purple-600">{hasMore ? 'Yes' : 'No'}</div>
-              <div className="text-gray-600">More Data Available</div>
+              <div className="text-gray-600 dark:text-gray-400">More Data Available</div>
             </div>
           </div>
         </div>
@@ -119,17 +133,17 @@ const InfiniteScrollApp = () => {
             return (
               <div key={`batch-${batchNumber}`} className="space-y-4">
                 {/* Batch Header */}
-                <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border-l-4 border-blue-500">
+                <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 rounded-lg p-4 border-l-4 border-blue-500 dark:border-blue-700">
                   <div className="flex items-center space-x-3">
                     <div className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm">
                       {batchNumber}
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Data Batch {batchNumber}</h3>
-                      <p className="text-sm text-gray-600">Users {(batchNumber - 1) * 10 + 1} - {batchNumber * 10}</p>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Data Batch {batchNumber}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Users {(batchNumber - 1) * 10 + 1} - {batchNumber * 10}</p>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
                     {batchItems.length} items loaded
                   </div>
                 </div>
@@ -137,12 +151,12 @@ const InfiniteScrollApp = () => {
                 {/* Batch Items */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {batchItems.map((item) => (
-                    <div key={item.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border-l-4 border-blue-200">
+                    <div key={item.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border-l-4 border-blue-200 dark:border-blue-600">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
+                        <span className="bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded-full font-medium">
                           ID: {item.id}
                         </span>
-                        <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                        <span className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs px-2 py-1 rounded-full">
                           {item.batchNumber}
                         </span>
                       </div>
@@ -154,12 +168,12 @@ const InfiniteScrollApp = () => {
                           className="w-12 h-12 rounded-full"
                         />
                         <div>
-                          <h3 className="font-semibold text-gray-900">{item.name}</h3>
-                          <p className="text-gray-600 text-sm">{item.email}</p>
+                          <h3 className="font-semibold text-gray-900 dark:text-white">{item.name}</h3>
+                          <p className="text-gray-600 dark:text-gray-400 text-sm">{item.email}</p>
                         </div>
                       </div>
                       
-                      <div className="space-y-2 text-sm text-gray-600">
+                      <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="flex items-center space-x-2">
                           <Calendar className="w-4 h-4" />
                           <span>Joined {item.joinDate}</span>
@@ -180,28 +194,28 @@ const InfiniteScrollApp = () => {
         {/* Enhanced Loading indicator with 4-second display */}
         {loading && (
           <div className="flex justify-center items-center py-20">
-            <div className="bg-white rounded-xl shadow-2xl p-10 max-w-md mx-auto border">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-10 max-w-md mx-auto border dark:border-gray-700">
               <div className="flex flex-col items-center space-y-6">
                 {/* Main spinner */}
                 <div className="relative">
-                  <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
-                  <div className="absolute inset-0 w-12 h-12 border-2 border-blue-200 rounded-full animate-ping"></div>
+                  <Loader2 className="w-12 h-12 animate-spin text-blue-600 dark:text-blue-400" />
+                  <div className="absolute inset-0 w-12 h-12 border-2 border-blue-200 dark:border-blue-800 rounded-full animate-ping"></div>
                 </div>
                 
                 {/* Loading text */}
                 <div className="text-center space-y-2">
-                  <div className="text-xl font-bold text-gray-800">Loading New Data</div>
-                  <div className="text-sm text-gray-600">Fetching more users from server...</div>
-                  <div className="text-xs text-gray-500">This may take a few seconds</div>
+                  <div className="text-xl font-bold text-gray-800 dark:text-white">Loading New Data</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Fetching more users from server...</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500">This may take a few seconds</div>
                 </div>
                 
                 {/* Animated progress bar */}
                 <div className="w-full max-w-xs">
-                  <div className="flex justify-between text-xs text-gray-500 mb-2">
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
                     <span>Progress</span>
                     <span>Loading...</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                     <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-full rounded-full animate-pulse shadow-sm"></div>
                   </div>
                 </div>
@@ -232,10 +246,10 @@ const InfiniteScrollApp = () => {
         {/* End of data message */}
         {!hasMore && (
           <div className="text-center py-12">
-            <div className="bg-gray-100 rounded-lg p-8 max-w-md mx-auto">
-              <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">All Users Loaded</h3>
-              <p className="text-gray-600">
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-8 max-w-md mx-auto">
+              <User className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">All Users Loaded</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 You've reached the end of our user database. No more data to load.
               </p>
             </div>
